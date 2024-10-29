@@ -19,6 +19,8 @@ using ElectricityBill.Domain.Events;
 using ElectricityBill.Domain.Services;
 using ElectricityBill.Application.Services;
 using System.Net.Mail;
+using MailKit.Net.Smtp;
+using SmtpClient = System.Net.Mail.SmtpClient;
 
 namespace ElectricityBill.Api
 {
@@ -35,6 +37,16 @@ namespace ElectricityBill.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            string host = builder.Configuration["Email:Smtp"];
+            int port = int.Parse(builder.Configuration["Email:Port"]);
+ 
+
+            builder.Services.AddSingleton<System.Net.Mail.SmtpClient>(provider =>
+            {
+               
+                return new System.Net.Mail.SmtpClient(host, port);
+            });
             // Add repositories
             builder.Services.AddSingleton<IBillRepository, InMemoryBillRepository>();
             builder.Services.AddSingleton<IWalletRepository, InMemoryWalletRepository>();
